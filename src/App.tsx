@@ -6,31 +6,24 @@ import { ApolloClient } from 'apollo-client';
 import { enviroment } from './enviroment';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { BatchHttpLink } from 'apollo-link-batch-http';
-import { Graphql } from './lib/graphql';
-import { schema } from './lib/graphql/schema';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { TopHeader } from './components/TopHeader';
 
 export default class App extends React.Component {
 
   state: {
-    token: string;
     client: ApolloClient<any>;
-    me: schema.Query;
   }
 
   constructor(props: any) {
     super(props);
-    const token = localStorage.getItem('token')!;
     this.state = {
-      token,
-      client: this.connectApolloClient(token),
-      me: {}
+      client: this.connectApolloClient(),
     }
   }
 
-  connectApolloClient = (token: string) => {
-    const url = enviroment.url + '?token=' + token;
+  connectApolloClient = () => {
+    const url = enviroment.url;
     const cache = new InMemoryCache();
     const batch = new BatchHttpLink({ uri: url });
     const client = new ApolloClient({
